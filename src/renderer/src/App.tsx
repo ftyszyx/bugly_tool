@@ -7,7 +7,7 @@ function App(): JSX.Element {
 
   return (
     <>
-      <div className=" flex items-center">
+      <div className=" flex items-center bg-white">
         <h1 className=" text-blue-500">hello tailwind</h1>
       </div>
       <img alt="logo" className="logo" src={electronLogo} />
