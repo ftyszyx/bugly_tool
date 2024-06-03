@@ -32,3 +32,11 @@ $ npm run build:mac
 # For Linux
 $ npm run build:linux
 ```
+
+# 功能
+
+1、加入ant design
+2、 加入tailwind
+3、duckdb
+1、bulgy登陆功能（在软件内实现bugly登陆，并获取token)
+bugly-session bugly_session
