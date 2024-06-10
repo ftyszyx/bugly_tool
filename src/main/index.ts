@@ -1,7 +1,8 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, BrowserView } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { openBuglyLogin } from './api/index.api'
 
 function createWindow(): void {
   // Create the browser window.
@@ -17,6 +18,7 @@ function createWindow(): void {
     }
   })
 
+  mainWindow.webContents.openDevTools()
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
@@ -33,6 +35,10 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+  // const view = new BrowserView()
+  // mainWindow.setBrowserView(view)
+  // view.setBounds({ x: 0, y: 0, width: 300, height: 300 })
+  // view.webContents.loadURL('http://bugly.qq.com')
 }
 
 // This method will be called when Electron has finished
@@ -51,6 +57,10 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
+  ipcMain.on('open_bugly_login', () => {
+    console.log('open bugly')
+    openBuglyLogin()
+  })
 
   createWindow()
 
