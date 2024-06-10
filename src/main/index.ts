@@ -1,8 +1,9 @@
-import { app, shell, BrowserWindow, ipcMain, BrowserView } from 'electron'
+import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { openBuglyLogin } from './api/index.api'
+import AppModel from './model/app.model'
 
 function createWindow(): void {
   // Create the browser window.
@@ -17,6 +18,7 @@ function createWindow(): void {
       sandbox: false
     }
   })
+  AppModel.getInstance().mainWindow = mainWindow
 
   mainWindow.webContents.openDevTools()
   mainWindow.on('ready-to-show', () => {
