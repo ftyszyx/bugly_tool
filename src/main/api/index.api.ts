@@ -43,7 +43,10 @@ export function openBuglyLogin() {
     .then()
     .catch((error) => {
       console.log('load err error', error)
-      AppModel.getInstance().showMsgErr(`打开bugly失败，请检查网络或者登录状态: ${error}`, 0)
+      AppModel.getInstance().sendmsg(
+        'LoadBuglyErr',
+        `打开bugly失败，请检查网络或者登录状态: ${error}`
+      )
       loginwin.close()
     })
 }
