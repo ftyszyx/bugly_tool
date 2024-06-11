@@ -1,41 +1,48 @@
 import { ChildProps } from '@renderer/entitys/other.entity'
 import { AppStore, use_appstore } from '@renderer/models/app.model'
-import { Button } from 'antd'
-import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons'
-import Layout, { Content, Footer, Header } from 'antd/es/layout/layout'
-import { useEffect, useState } from 'react'
+import Layout, { Content, Footer } from 'antd/es/layout/layout'
+import { useEffect } from 'react'
+import MyMenu from '@renderer/components/admin_menu'
+import MyHeader from '@renderer/components/admin_header'
+import { getAllMenus } from '@renderer/entitys/menu.entity'
+import MyBread from '@renderer/components/admin_bread'
+import { FloatButton } from 'antd'
+import { QuestionCircleOutlined } from '@ant-design/icons'
 
 function BasicLayout(props: ChildProps): JSX.Element {
   console.log('basiclayout render')
   const appstore = use_appstore() as AppStore
-  const [collapsed, setCollapsed] = useState(false) // 菜单栏是否收起
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('open_bugly_login')
+  useEffect(() => {
+    window.electron.ipcRenderer.on('bugly-session', (_, bugly_session) => {
+      console.log('get session', bugly_session)
+      appstore.setSession(bugly_session)
+    })
+  }, [])
   useEffect(() => {
     if (appstore.bugly_session_v4 == '') {
-      ipcHandle()
+      window.electron.ipcRenderer.send('open_bugly_login')
     }
-  }, [])
+  }, [appstore.bugly_session_v4])
   return (
     <Layout className="w-full min-h-screen" hasSider>
-      {/* <MenuCom data={userstore.menus} collapsed={collapsed} /> */}
+      <MyMenu />
       <Layout>
-        <Header>
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
-            style={{
-              fontSize: '16px',
-              width: 64,
-              height: 64
-            }}
-          />
-        </Header>
+        <MyHeader />
+        <MyBread menus={getAllMenus()} />
         <Content className="mx-1 my-0 mr-0 p-0 bg-white h-full min-h-[280px]">
           {props.children}
         </Content>
         <Footer />
       </Layout>
+      <FloatButton
+        className=" left-3"
+        icon={<QuestionCircleOutlined />}
+        type="default"
+        style={{ right: 94 }}
+        onClick={() => {
+          window.open('https://rg975ojk5z.feishu.cn/wiki/IwgSwRnE4igubBkRX5OcMSXDnmg')
+        }}
+      />
     </Layout>
   )
 }

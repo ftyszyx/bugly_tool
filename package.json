@@ -26,6 +26,7 @@
     "@electron-toolkit/utils": "^3.0.0",
     "antd": "^5.17.4",
     "electron-updater": "^6.1.7",
+    "lodash": "^4.17.21",
     "path-to-regexp": "^6.2.2"
   },
   "devDependencies": {

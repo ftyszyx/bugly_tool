@@ -10,6 +10,13 @@ class AppModel {
     }
     return AppModel.instance
   }
+
+  public showMsgErr(msg: string, duration: number = 3000) {
+    this.mainWindow?.webContents.send('ShowMsgErr', msg, duration)
+  }
+  public showMsgInfo(msg: string, duration: number = 3000) {
+    this.mainWindow?.webContents.send('ShowMsgInfo', msg, duration)
+  }
 }
 
 export default AppModel

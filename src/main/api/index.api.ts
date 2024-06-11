@@ -1,4 +1,4 @@
-import { BrowserWindow } from 'electron'
+import { BrowserWindow, session } from 'electron'
 import AppModel from '../model/app.model'
 
 function getToken(loginwin: BrowserWindow) {
@@ -8,12 +8,16 @@ function getToken(loginwin: BrowserWindow) {
       console.log('bugly_session', bugly_session_mid?.value)
       AppModel.getInstance().mainWindow?.webContents.send('bugly-session', bugly_session_mid?.value)
       loginwin.close()
-      loginwin.webContents.session.clearStorageData().then(() => {
-        console.log('clear storage data')
-      })
     }
   })
 }
+
+export function cleanToken() {
+  session.defaultSession.clearStorageData().then(() => {
+    console.log('clear storage data ok')
+  })
+}
+
 export function openBuglyLogin() {
   const loginwin = new BrowserWindow({
     width: 860,
@@ -31,7 +35,15 @@ export function openBuglyLogin() {
     console.log('navigate to ', url)
   })
   loginwin.webContents.on('did-finish-load', async () => {
+    console.log('did-finish-load')
     getToken(loginwin)
   })
-  loginwin.loadURL('https://bugly.qq.com/v2/workbench/apps').then()
+  loginwin
+    .loadURL('https://bugly.qq.com/v2/workbench/apps')
+    .then()
+    .catch((error) => {
+      console.log('load err error', error)
+      AppModel.getInstance().showMsgErr(`打开bugly失败，请检查网络或者登录状态: ${error}`, 0)
+      loginwin.close()
+    })
 }
