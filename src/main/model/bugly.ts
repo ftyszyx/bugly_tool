@@ -42,7 +42,8 @@ class BuglyHelper {
     const url_str = url.toString()
     console.log('get user info', url_str)
     const response = await net.fetch(url_str, {
-      method: 'GET',
+      method: 'get',
+      mode: 'cors',
       headers: {
         'Content-Type': 'application/json;charset=utf-8',
         Accept: 'application/json;charset=utf-8'
@@ -50,7 +51,7 @@ class BuglyHelper {
     })
     if (response.ok) {
       const res_text = await response.text()
-      console.log('get user info', res_text)
+      console.log('get user info text', res_text)
       const body = await response.json()
       console.log('get user info', body)
     } else {

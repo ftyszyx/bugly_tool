@@ -2,7 +2,7 @@ import { app, shell, BrowserWindow, ipcMain, Menu } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { cleanToken, checkbuglyLogin } from './api/index.api'
+import { cleanToken, checkbuglyLogin, initAllApi } from './api/index.api'
 import AppModel from './model/app.model'
 
 function createWindow(): void {
@@ -57,14 +57,7 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
-  ipcMain.on('open_bugly_login', () => {
-    console.log('open bugly')
-    checkbuglyLogin()
-  })
-  ipcMain.on('clean_token', () => {
-    console.log('clean token')
-    cleanToken()
-  })
+  initAllApi()
 
   createWindow()
 

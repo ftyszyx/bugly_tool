@@ -1,5 +1,16 @@
-import { BrowserWindow, session } from 'electron'
+import { ipcMain, BrowserWindow, session } from 'electron'
 import AppModel from '../model/app.model'
+export function initAllApi() {
+  ipcMain.on('open_bugly_login', () => {
+    checkbuglyLogin()
+  })
+  ipcMain.on('clean_token', () => {
+    cleanToken()
+  })
+  ipcMain.on('getuser_info', () => {
+    AppModel.getInstance().bulgy_helper.getUserInfo()
+  })
+}
 
 function getToken(loginwin: BrowserWindow) {
   loginwin.webContents.session.cookies.get({ domain: 'bugly.qq.com' }).then((cookies) => {
@@ -7,17 +18,17 @@ function getToken(loginwin: BrowserWindow) {
     if (bugly_session_mid) {
       console.log('bugly_session', bugly_session_mid?.value)
       AppModel.getInstance().mainWindow?.webContents.send('bugly-session', bugly_session_mid?.value)
-      AppModel.getInstance()
-        .mainWindow?.webContents.session.cookies.get({ domain: 'bugly.qq.com' })
-        .then((cookies) => {
-          console.log('main cookies', cookies)
-        })
-      AppModel.getInstance().mainWindow?.webContents.session.cookies.set({
-        domain: 'bugly.qq.com',
-        name: 'bugly-session',
-        value: bugly_session_mid?.value,
-        url: ''
-      })
+      // AppModel.getInstance()
+      //   .mainWindow?.webContents.session.cookies.get({ domain: 'bugly.qq.com' })
+      //   .then((cookies) => {
+      //     console.log('main cookies', cookies)
+      //   })
+      // AppModel.getInstance().mainWindow?.webContents.session.cookies.set({
+      //   domain: 'bugly.qq.com',
+      //   name: 'bugly-session',
+      //   value: bugly_session_mid?.value,
+      //   url: ''
+      // })
       AppModel.getInstance().bugly_session = bugly_session_mid?.value
       AppModel.getInstance().bulgy_helper.getUserInfo()
       loginwin.close()
@@ -25,14 +36,14 @@ function getToken(loginwin: BrowserWindow) {
   })
 }
 
-export function cleanToken() {
+function cleanToken() {
   AppModel.getInstance().bugly_session = ''
   session.defaultSession.clearStorageData().then(() => {
     console.log('clear storage data ok')
   })
 }
 
-export function checkbuglyLogin() {
+function checkbuglyLogin() {
   AppModel.getInstance().bugly_session = ''
   const loginwin = new BrowserWindow({
     width: 860,
@@ -66,4 +77,4 @@ export function checkbuglyLogin() {
     })
 }
 
-export function getBuglyAppList() {}
+function getBuglyAppList() {}
