@@ -59,11 +59,19 @@ export default function MyMenu(): JSX.Element {
   }, [location.PathName, menutree_info])
 
   return (
-    <Sider width={256} className="sider" trigger={null} collapsible collapsed={appstore.fold_menu}>
-      <div className={appstore.fold_menu ? 'menuLogo hide' : 'menuLogo'}>
-        <Link to="/">
-          <img src={ImgLogo} />
-          <div>{SystemName}</div>
+    <Sider
+      width={256}
+      className=" min-h-full"
+      trigger={null}
+      collapsible
+      collapsed={appstore.fold_menu}
+    >
+      <div className={'h-16 bg-slate-800'}>
+        <Link to="/" className={appstore.fold_menu ? ' hidden' : ' flex h-full items-center'}>
+          <img src={ImgLogo} className=" w-10 ml-3" />
+          <div className=" text-white w-full" style={{ width: '100 %', fontSize: '24px' }}>
+            {SystemName}
+          </div>
         </Link>
       </div>
       <MenuAntd

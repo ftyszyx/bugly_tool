@@ -1,5 +1,5 @@
-import { Layout } from 'antd'
-import { MenuFoldOutlined } from '@ant-design/icons'
+import { Dropdown, Layout } from 'antd'
+import { MenuFoldOutlined, ReloadOutlined } from '@ant-design/icons'
 import { AppStore, use_appstore } from '@renderer/models/app.model'
 const { Header } = Layout
 

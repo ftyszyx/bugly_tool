@@ -1,21 +1,21 @@
-import { LinkProps, RouterStoreData } from "kl_router";
-import routerContext from "./RouterContext";
+import { LinkProps, RouterStoreData } from './index'
+import routerContext from './RouterContext'
 export default function Link(props: LinkProps) {
-  const { to } = props;
+  const { to } = props
   // console.log("link to render ", to);
   const cosumerFun = (value: RouterStoreData) => {
     return (
       <a
         href={to}
         onClick={(e) => {
-          e.preventDefault();
-          value.history?.push(to);
+          e.preventDefault()
+          value.history?.push(to)
         }}
-        className={props.className || ""}
+        className={props.className || ''}
       >
         {props.children}
       </a>
-    );
-  };
-  return <routerContext.Consumer>{cosumerFun}</routerContext.Consumer>;
+    )
+  }
+  return <routerContext.Consumer>{cosumerFun}</routerContext.Consumer>
 }

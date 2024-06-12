@@ -14,17 +14,33 @@ export const allMenus: MyMenuType[] = [
     id: 1,
     title: '概况',
     sorts: 1,
-    icon_style_type: 'icon-clients',
+    icon_style_type: 'icon-home',
     parent: '0',
     url: PagePath.AdminHome
   },
   {
     id: 2,
-    title: '高级搜索',
+    title: '数据采集',
     sorts: 2,
-    icon_style_type: 'icon-terminal',
+    icon_style_type: 'icon-crawler',
+    parent: '0',
+    url: PagePath.AdminCrawl
+  },
+  {
+    id: 3,
+    title: '高级搜索',
+    sorts: 3,
+    icon_style_type: 'icon-search',
     parent: '0',
     url: PagePath.AdminSearch
+  },
+  {
+    id: 4,
+    title: '设置',
+    sorts: 4,
+    icon_style_type: 'icon-set',
+    parent: '0',
+    url: PagePath.AdminSet
   }
 ]
 
