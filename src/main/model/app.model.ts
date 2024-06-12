@@ -1,7 +1,10 @@
 import { BrowserWindow } from 'electron'
+import BuglyHelper from './bugly'
 
 class AppModel {
-  public mainWindow: BrowserWindow | null = null
+  mainWindow: BrowserWindow | null = null
+  bulgy_helper: BuglyHelper = new BuglyHelper()
+  bugly_session: string = ''
   constructor() {}
   private static instance: AppModel
   public static getInstance() {

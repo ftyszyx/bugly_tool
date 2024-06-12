@@ -554,8 +554,8 @@ video {
   --tw-contain-style:  ;
 }
 
-.absolute {
-  position: absolute;
+.relative {
+  position: relative;
 }
 
 .left-3 {
@@ -586,6 +586,10 @@ video {
 
 .mr-2 {
   margin-right: 0.5rem;
+}
+
+.ml-\[100px\] {
+  margin-left: 100px;
 }
 
 .inline {
@@ -699,6 +703,20 @@ video {
   line-height: 2rem;
 }
 
+.text-4xl {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+}
+
+.text-9xl {
+  font-size: 8rem;
+  line-height: 1;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
 .text-green-500 {
   --tw-text-opacity: 1;
   color: rgb(34 197 94 / var(--tw-text-opacity));
@@ -707,6 +725,16 @@ video {
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.text-zinc-400 {
+  --tw-text-opacity: 1;
+  color: rgb(161 161 170 / var(--tw-text-opacity));
+}
+
+.text-zinc-50 {
+  --tw-text-opacity: 1;
+  color: rgb(250 250 250 / var(--tw-text-opacity));
 }
 
 .shadow {
