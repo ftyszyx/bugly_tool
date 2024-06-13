@@ -2,7 +2,7 @@ import { app, shell, BrowserWindow, ipcMain, Menu } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { cleanToken, checkbuglyLogin, initAllApi } from './api/index.api'
+import { initAllApi } from './api/index.api'
 import AppModel from './model/app.model'
 
 function createWindow(): void {
@@ -39,10 +39,6 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
-  // const view = new BrowserView()
-  // mainWindow.setBrowserView(view)
-  // view.setBounds({ x: 0, y: 0, width: 300, height: 300 })
-  // view.webContents.loadURL('http://bugly.qq.com')
 }
 
 app.whenReady().then(() => {

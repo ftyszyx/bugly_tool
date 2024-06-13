@@ -29,8 +29,8 @@ function getToken(loginwin: BrowserWindow) {
       //   value: bugly_session_mid?.value,
       //   url: ''
       // })
-      AppModel.getInstance().bugly_session = bugly_session_mid?.value
-      AppModel.getInstance().bulgy_helper.getUserInfo()
+      // AppModel.getInstance().bugly_session = bugly_session_mid?.value
+      // AppModel.getInstance().bulgy_helper.getUserInfo()
       loginwin.close()
     }
   })
