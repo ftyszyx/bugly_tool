@@ -23,7 +23,14 @@ export const MyFetchPost = <REQ_T, RESP_T>(
 MyFetch.interceptors.request.use(
   (req) => {
     console.log('fetch req ', req.method, req.url, req.data)
-    req.headers['Content-Type'] = 'application/json'
+    req.headers['Content-Type'] = 'application/json;charset=utf-8'
+    req.headers['Accept'] = 'application/json;charset=utf-8'
+    // req.headers['User-Agent'] =
+    //   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36'
+    // req.headers['Referer'] = 'https://bugly.qq.com/'
+    const bugly_session = document.cookie
+    console.log('bugly_session', bugly_session)
+    // req.headers['cookie'] = bugly_session
     //加载中
     return req
   },

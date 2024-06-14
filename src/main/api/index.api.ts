@@ -8,7 +8,7 @@ export function initAllApi() {
     cleanToken()
   })
   ipcMain.on('getuser_info', () => {
-    AppModel.getInstance().bulgy_helper.getUserInfo()
+    AppModel.getInstance().buglyhelper.getUserInfo()
   })
 }
 

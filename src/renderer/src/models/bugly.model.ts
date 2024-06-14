@@ -13,6 +13,7 @@ export const use_bugly = create<BuglyModel>((set, get) => {
     bugly_session: '',
     setSession(session) {
       set((state) => {
+        // setCookie('bugly-session', session, 365)
         return { ...state, bugly_session: session }
       })
     },

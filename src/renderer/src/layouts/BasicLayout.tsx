@@ -1,10 +1,8 @@
 import { ChildProps } from '@renderer/entitys/other.entity'
-import { AppStore, use_appstore } from '@renderer/models/app.model'
 import Layout, { Content, Footer } from 'antd/es/layout/layout'
 import { useEffect } from 'react'
 import MyMenu from '@renderer/components/admin_menu'
 import MyHeader from '@renderer/components/admin_header'
-import { getAllMenus } from '@renderer/entitys/menu.entity'
 import MyBread from '@renderer/components/admin_bread'
 import { FloatButton } from 'antd'
 import { QuestionCircleOutlined } from '@ant-design/icons'
@@ -18,6 +16,9 @@ function BasicLayout(props: ChildProps): JSX.Element {
       console.log('get session', bugly_session)
       buglyStore.setSession(bugly_session)
     })
+    return () => {
+      window.electron.ipcRenderer.removeAllListeners('bugly-session')
+    }
   }, [])
   useEffect(() => {
     if (buglyStore.bugly_session == '') {

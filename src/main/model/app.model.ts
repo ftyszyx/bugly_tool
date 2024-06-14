@@ -3,7 +3,7 @@ import BuglyHelper from './bugly'
 
 class AppModel {
   mainWindow: BrowserWindow | null = null
-  bulgy_helper: BuglyHelper = new BuglyHelper()
+  buglyhelper: BuglyHelper = new BuglyHelper()
   bugly_session: string = ''
   constructor() {}
   private static instance: AppModel

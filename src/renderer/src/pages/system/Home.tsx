@@ -9,7 +9,8 @@ export default function Home() {
       <Button
         type="primary"
         onClick={() => {
-          buglystore.initBugly()
+          window.electron.ipcRenderer.send('getuser_info')
+          // buglystore.initBugly()
         }}
       >
         get userinfo
