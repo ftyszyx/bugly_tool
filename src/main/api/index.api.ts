@@ -18,33 +18,19 @@ function getToken(loginwin: BrowserWindow) {
     if (bugly_session_mid) {
       console.log('bugly_session', bugly_session_mid?.value)
       AppModel.getInstance().mainWindow?.webContents.send('bugly-session', bugly_session_mid?.value)
-      // AppModel.getInstance()
-      //   .mainWindow?.webContents.session.cookies.get({ domain: 'bugly.qq.com' })
-      //   .then((cookies) => {
-      //     console.log('main cookies', cookies)
-      //   })
-      // AppModel.getInstance().mainWindow?.webContents.session.cookies.set({
-      //   domain: 'bugly.qq.com',
-      //   name: 'bugly-session',
-      //   value: bugly_session_mid?.value,
-      //   url: ''
-      // })
-      // AppModel.getInstance().bugly_session = bugly_session_mid?.value
-      // AppModel.getInstance().bulgy_helper.getUserInfo()
+      AppModel.getInstance().buglyhelper.bugly_session = bugly_session_mid?.value
       loginwin.close()
     }
   })
 }
 
 function cleanToken() {
-  AppModel.getInstance().bugly_session = ''
   session.defaultSession.clearStorageData().then(() => {
     console.log('clear storage data ok')
   })
 }
 
 function checkbuglyLogin() {
-  AppModel.getInstance().bugly_session = ''
   const loginwin = new BrowserWindow({
     width: 860,
     height: 570,

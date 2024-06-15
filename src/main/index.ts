@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain, Menu } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, Menu, session } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -15,20 +15,17 @@ function createWindow(): void {
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
-      webSecurity: false,
-      allowRunningInsecureContent: true,
+      // webSecurity: false,
+      // allowRunningInsecureContent: true,
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     }
   })
   AppModel.getInstance().mainWindow = mainWindow
-
   mainWindow.webContents.openDevTools({ mode: 'detach' })
-
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
-
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
     return { action: 'deny' }
@@ -56,12 +53,11 @@ app.whenReady().then(() => {
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
   initAllApi()
-
   createWindow()
-
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+  AppModel.getInstance().initNetwork()
 })
 
 app.on('window-all-closed', () => {

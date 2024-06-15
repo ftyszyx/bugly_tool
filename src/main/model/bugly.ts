@@ -1,6 +1,7 @@
-import { net } from 'electron'
+import { net, session } from 'electron'
 import { randomBytes } from 'crypto'
 class BuglyHelper {
+  bugly_session: string = ''
   fsn_arr: string[] = []
   constructor() {
     for (let i = 0; i < 256; i++) {
@@ -36,29 +37,38 @@ class BuglyHelper {
     ).toLowerCase()
   }
 
+  setCommonHeader(request: Electron.ClientRequest) {
+    request.setHeader('Referer', 'https://bugly.qq.com/v2/workbench/apps')
+    request.setHeader(
+      'User-Agent',
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.291 Safari/537.36'
+    )
+    request.setHeader('Accept', 'application/json;charset=utf-8')
+    request.setHeader('Content-Type', 'application/json;charset=utf-8')
+    request.setHeader('Accept-Language', 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6')
+    console.log('write session', this.bugly_session)
+    request.setHeader('Cookie', `bugly-session=${this.bugly_session}`)
+  }
+
   async getUserInfo() {
     const url = new URL('https://bugly.qq.com/v4/api/old/info')
     url.searchParams.append('fsn', this.get_fsn())
     const url_str = url.toString()
-    console.log('get user info', url_str)
-    const response = await net.fetch(url_str, {
-      method: 'get',
-      mode: 'cors',
-      referrer: 'https://bugly.qq.com/v2/crash-reporting/dashboard/ab894e82ac?pid=1',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-        Accept: 'application/json;charset=utf-8'
-      }
+    console.log('get user info1', url_str)
+    const request = net.request(url_str)
+    this.setCommonHeader(request)
+    request.on('response', (response) => {
+      response.on('data', (chunk) => {
+        console.log('get user info2', chunk.toString())
+      })
+      response.on('end', () => {
+        console.log('get user info end')
+      })
+      response.on('error', (error) => {
+        console.log('get user info error', error)
+      })
     })
-    if (response.ok) {
-      const res_text = await response.text()
-      console.log('get user info text', res_text)
-      const body = await response.json()
-      console.log('get user info', body)
-    } else {
-      console.log('get user info error', response.statusText)
-    }
+    request.end()
   }
 }
 
