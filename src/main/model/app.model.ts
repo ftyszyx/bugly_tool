@@ -23,7 +23,7 @@ class AppModel {
   public showMsgInfo(msg: string, duration: number = 3000) {
     this.mainWindow?.webContents.send('ShowMsgInfo', msg, duration)
   }
-  public sendmsg(event: string, ...args: any[]) {
+  public sendMsgToWeb(event: string, ...args: any[]) {
     this.mainWindow?.webContents.send(event, ...args)
   }
 

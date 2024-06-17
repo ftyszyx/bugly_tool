@@ -1,14 +1,15 @@
 import { ipcMain, BrowserWindow, session } from 'electron'
 import AppModel from '../model/app.model'
+import { MainToWebMsg, WebToMainMsg } from '../../common/entitys/ipcmsg.entity'
 export function initAllApi() {
-  ipcMain.on('open_bugly_login', () => {
+  ipcMain.on(WebToMainMsg.OpenBuglyLogin, () => {
     checkbuglyLogin()
   })
-  ipcMain.on('clean_token', () => {
+  ipcMain.on(WebToMainMsg.CleanToken, () => {
     cleanToken()
   })
-  ipcMain.on('getuser_info', () => {
-    AppModel.getInstance().buglyhelper.getUserInfo()
+  ipcMain.on(WebToMainMsg.GetuserInfo, () => {
+    AppModel.getInstance().buglyhelper.initbuylyInfo()
   })
 }
 
@@ -17,7 +18,10 @@ function getToken(loginwin: BrowserWindow) {
     const bugly_session_mid = cookies.find((cookie) => cookie.name == 'bugly-session')
     if (bugly_session_mid) {
       console.log('bugly_session', bugly_session_mid?.value)
-      AppModel.getInstance().mainWindow?.webContents.send('bugly-session', bugly_session_mid?.value)
+      AppModel.getInstance().mainWindow?.webContents.send(
+        MainToWebMsg.OnGetBuglySession,
+        bugly_session_mid?.value
+      )
       AppModel.getInstance().buglyhelper.bugly_session = bugly_session_mid?.value
       loginwin.close()
     }
@@ -55,7 +59,7 @@ function checkbuglyLogin() {
     .then()
     .catch((error) => {
       console.log('load err error', error)
-      AppModel.getInstance().sendmsg(
+      AppModel.getInstance().sendMsgToWeb(
         'LoadBuglyErr',
         `打开bugly失败，请检查网络或者登录状态: ${error}`
       )

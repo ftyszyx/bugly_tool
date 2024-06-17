@@ -1,4 +1,4 @@
-interface BuglyUserInfo {
+export interface BuglyUserInfo {
   newUserId: string
   registerTime: string
   logoUrl: string
@@ -20,7 +20,7 @@ interface BuglyUserInfo {
   isSuper: number
 }
 
-interface BuglyAppInfo {
+export interface BuglyAppInfo {
   appName: string
   appId: string
   pid: number //1
@@ -37,4 +37,23 @@ interface BuglyAppInfo {
   enableUserAuit: number //0
   showAuit: number //0
   betaEnable: number //0
+}
+
+export interface BuglyAppDetail {
+  versionList: [
+    {
+      name: string
+    }
+  ]
+}
+
+export interface BuglyAppCrashDateInfo {
+  appId: string
+  platformId: string
+  date: string
+  type: string
+  crashnum: number
+  crashUser: number
+  accessNum: number
+  accessUser: number
 }

@@ -1,7 +1,17 @@
-import { net, session } from 'electron'
+import { net } from 'electron'
 import { randomBytes } from 'crypto'
+import {
+  BuglyAppCrashDateInfo,
+  BuglyAppDetail,
+  BuglyAppInfo,
+  BuglyUserInfo
+} from '../../common/entitys/bugly.entity'
+import AppModel from './app.model'
+import { MainToWebMsg } from '../../common/entitys/ipcmsg.entity'
 class BuglyHelper {
   bugly_session: string = ''
+  user_info: BuglyUserInfo | null = null
+  old_base_url = 'https://bugly.qq.com/v4/api/old'
   fsn_arr: string[] = []
   constructor() {
     for (let i = 0; i < 256; i++) {
@@ -50,25 +60,107 @@ class BuglyHelper {
     request.setHeader('Cookie', `bugly-session=${this.bugly_session}`)
   }
 
-  async getUserInfo() {
-    const url = new URL('https://bugly.qq.com/v4/api/old/info')
+  async initbuylyInfo() {
+    this.user_info = await this.get_bugly_info<BuglyUserInfo>(this.old_base_url + '/info').catch(
+      (_) => {
+        return null
+      }
+    )
+    if (this.user_info == null) {
+      return
+    }
+    AppModel.getInstance().sendMsgToWeb(MainToWebMsg.OnGetBuglyUserInfo, this.user_info)
+    const applist = await this.get_bugly_info<BuglyAppInfo[]>(this.old_base_url + '/app-list', {
+      userId: this.user_info?.userId
+    }).catch((_) => {
+      return null
+    })
+    AppModel.getInstance().sendMsgToWeb(MainToWebMsg.OnGetBuglyAppList, applist)
+  }
+
+  async getAppVersion(appinfo: BuglyAppInfo) {
+    const res = await this.get_bugly_info<BuglyAppDetail>(
+      'https://bugly.qq.com/v4/api/old/get-app-info',
+      {
+        appId: appinfo.appId,
+        pid: appinfo.pid.toString(),
+        types: 'version' //version,member,tag,channel
+      }
+    ).catch((_) => {})
+    if (res == null) {
+      return []
+    }
+    return res.versionList.map((item) => item.name)
+  }
+
+  async getDayCrashInfo(appinfo: BuglyAppInfo, version: string, start: string, end: string) {
+    const res = await this.get_bugly_info<{ data: BuglyAppCrashDateInfo[] }>(
+      'https://bugly.qq.com/v4/api/old/get-crash-trend',
+      {
+        appId: appinfo.appId,
+        pid: appinfo.pid.toString(),
+        type: 'crash',
+        dataType: 'trendData',
+        startDate: start, //20240101
+        endDate: end,
+        version
+      }
+    ).catch((_) => {})
+    if (res == null) {
+      return []
+    }
+    return res.data
+  }
+
+  async getHourCrashInfo(appinfo: BuglyAppInfo, version: string, start: string, end: string) {
+    const res = await this.get_bugly_info<{ data: BuglyAppCrashDateInfo[] }>(
+      this.old_base_url + '/get-real-time-hourly-stat',
+      {
+        appId: appinfo.appId,
+        pid: appinfo.pid.toString(),
+        type: 'crash',
+        startHour: start, //2024061700
+        endHour: end, //2024061723
+        dataType: 'realTimeTrendData',
+        version //全版本就是-1
+      }
+    ).catch((_) => {})
+    if (res == null) {
+      return []
+    }
+    return res.data
+  }
+
+  async get_bugly_info<T>(src_url: string, params?: Record<string, number | string>): Promise<T> {
+    const url = new URL(src_url)
     url.searchParams.append('fsn', this.get_fsn())
+    if (params) {
+      for (const key in params) {
+        url.searchParams.append(key, params[key].toString())
+      }
+    }
     const url_str = url.toString()
     console.log('get user info1', url_str)
     const request = net.request(url_str)
     this.setCommonHeader(request)
-    request.on('response', (response) => {
-      response.on('data', (chunk) => {
-        console.log('get user info2', chunk.toString())
-      })
-      response.on('end', () => {
-        console.log('get user info end')
-      })
-      response.on('error', (error) => {
-        console.log('get user info error', error)
+    request.end()
+    return new Promise((resolve, reject) => {
+      request.on('response', (response) => {
+        var data = ''
+        response.on('data', (chunk) => {
+          data += chunk.toString()
+        })
+        response.on('end', () => {
+          // console.log(`get info ok:${data}`)
+          const res = JSON.parse(data).data
+          resolve(res as T)
+        })
+        response.on('error', (error) => {
+          console.log('get info error', error, url_str)
+          reject(error)
+        })
       })
     })
-    request.end()
   }
 }
 

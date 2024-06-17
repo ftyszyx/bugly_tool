@@ -1,4 +1,4 @@
-import { ChildProps } from '@renderer/entitys/other.entity'
+import { ChildProps } from 'src/common/entitys/other.entity'
 import Layout, { Content, Footer } from 'antd/es/layout/layout'
 import { useEffect } from 'react'
 import MyMenu from '@renderer/components/admin_menu'
@@ -7,12 +7,13 @@ import MyBread from '@renderer/components/admin_bread'
 import { FloatButton } from 'antd'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import { BuglyModel, use_bugly } from '@renderer/models/bugly.model'
+import { MainToWebMsg, WebToMainMsg } from '@common/entitys/ipcmsg.entity'
 
 function BasicLayout(props: ChildProps): JSX.Element {
   console.log('basiclayout render')
   const buglyStore = use_bugly() as BuglyModel
   useEffect(() => {
-    window.electron.ipcRenderer.on('bugly-session', (_, bugly_session) => {
+    window.electron.ipcRenderer.on(MainToWebMsg.OnGetBuglySession, (_, bugly_session) => {
       console.log('get session', bugly_session)
       buglyStore.setSession(bugly_session)
     })
@@ -22,7 +23,7 @@ function BasicLayout(props: ChildProps): JSX.Element {
   }, [])
   useEffect(() => {
     if (buglyStore.bugly_session == '') {
-      window.electron.ipcRenderer.send('open_bugly_login')
+      window.electron.ipcRenderer.send(WebToMainMsg.OpenBuglyLogin)
     }
   }, [buglyStore.bugly_session])
   return (

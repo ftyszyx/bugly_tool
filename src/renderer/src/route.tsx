@@ -1,4 +1,4 @@
-import { PagePath } from './entitys/page.entity'
+import { PagePath } from '../../common/entitys/page.entity'
 import BasicLayout from './layouts/BasicLayout'
 import { BrowerRouter, Route } from './libs/router'
 import NotFound from './pages/errpages/404'

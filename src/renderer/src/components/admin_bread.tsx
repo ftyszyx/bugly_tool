@@ -5,7 +5,7 @@ import { Breadcrumb } from 'antd'
 import { EnvironmentOutlined } from '@ant-design/icons'
 import { pathToRegexp } from 'path-to-regexp'
 import { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb'
-import { getAllMenus } from '@renderer/entitys/menu.entity'
+import { getAllMenus } from '@common/entitys/menu.entity'
 export default function MyBread(): JSX.Element {
   const location = useHistory()
   /** 根据当前location动态生成对应的面包屑 **/

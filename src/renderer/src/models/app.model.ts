@@ -1,4 +1,4 @@
-import { AppEntity } from '@renderer/entitys/app.entity'
+import { AppEntity } from 'src/common/entitys/app.entity'
 import { create } from '@renderer/libs/state'
 
 export interface AppStore extends AppEntity {}
