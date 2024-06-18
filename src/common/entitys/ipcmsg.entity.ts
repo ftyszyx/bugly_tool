@@ -2,7 +2,6 @@
 export enum WebToMainMsg {
   OpenBuglyLogin = 'open_bugly_login',
   CleanToken = 'clean_token',
-  GetuserInfo = 'getuser_info',
   InitBugly = 'init_bugly',
   GetAppVersions = 'app_versions'
 }

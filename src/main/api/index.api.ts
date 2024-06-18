@@ -1,6 +1,7 @@
 import { ipcMain, BrowserWindow, session } from 'electron'
 import AppModel from '../model/app.model'
 import { MainToWebMsg, WebToMainMsg } from '../../common/entitys/ipcmsg.entity'
+import { BuglyAppInfo } from '../../common/entitys/bugly.entity'
 export function initAllApi() {
   ipcMain.on(WebToMainMsg.OpenBuglyLogin, () => {
     checkbuglyLogin()
@@ -8,8 +9,11 @@ export function initAllApi() {
   ipcMain.on(WebToMainMsg.CleanToken, () => {
     cleanToken()
   })
-  ipcMain.on(WebToMainMsg.GetuserInfo, () => {
+  ipcMain.on(WebToMainMsg.InitBugly, () => {
     AppModel.getInstance().buglyhelper.initbuylyInfo()
+  })
+  ipcMain.handle(WebToMainMsg.GetAppVersions, async (_, apps: string[]) => {
+    return await AppModel.getInstance().buglyhelper.getAppsVersions(apps)
   })
 }
 

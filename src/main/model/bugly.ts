@@ -11,6 +11,7 @@ import { MainToWebMsg } from '../../common/entitys/ipcmsg.entity'
 class BuglyHelper {
   bugly_session: string = ''
   user_info: BuglyUserInfo | null = null
+  app_list: BuglyAppInfo[] = []
   old_base_url = 'https://bugly.qq.com/v4/api/old'
   fsn_arr: string[] = []
   constructor() {
@@ -70,27 +71,43 @@ class BuglyHelper {
       return
     }
     AppModel.getInstance().sendMsgToWeb(MainToWebMsg.OnGetBuglyUserInfo, this.user_info)
-    const applist = await this.get_bugly_info<BuglyAppInfo[]>(this.old_base_url + '/app-list', {
+    var applist = await this.get_bugly_info<BuglyAppInfo[]>(this.old_base_url + '/app-list', {
       userId: this.user_info?.userId
     }).catch((_) => {
-      return null
+      return []
     })
-    AppModel.getInstance().sendMsgToWeb(MainToWebMsg.OnGetBuglyAppList, applist)
+    var appset = new Set<string>()
+    this.app_list = applist.filter((item) => {
+      if (appset.has(item.appId)) {
+        return false
+      }
+      appset.add(item.appId)
+      return true
+    })
+    AppModel.getInstance().sendMsgToWeb(MainToWebMsg.OnGetBuglyAppList, this.app_list)
   }
 
   async getAppVersion(appinfo: BuglyAppInfo) {
-    const res = await this.get_bugly_info<BuglyAppDetail>(
-      'https://bugly.qq.com/v4/api/old/get-app-info',
-      {
-        appId: appinfo.appId,
-        pid: appinfo.pid.toString(),
-        types: 'version' //version,member,tag,channel
-      }
-    ).catch((_) => {})
+    const res = await this.get_bugly_info<BuglyAppDetail>(this.old_base_url + '/get-app-info', {
+      appId: appinfo.appId,
+      pid: appinfo.pid.toString(),
+      types: 'version' //version,member,tag,channel
+    }).catch((_) => {})
     if (res == null) {
       return []
     }
     return res.versionList.map((item) => item.name)
+  }
+
+  async getAppsVersions(apps: string[]) {
+    let res_versions: string[] = []
+    for (const app of apps) {
+      var appinfo = this.app_list.find((item) => item.appId == app)
+      if (appinfo == null) continue
+      const versions = await this.getAppVersion(appinfo)
+      res_versions = res_versions.concat(versions)
+    }
+    return res_versions
   }
 
   async getDayCrashInfo(appinfo: BuglyAppInfo, version: string, start: string, end: string) {

@@ -16,9 +16,27 @@ function BasicLayout(props: ChildProps): JSX.Element {
     window.electron.ipcRenderer.on(MainToWebMsg.OnGetBuglySession, (_, bugly_session) => {
       console.log('get session', bugly_session)
       buglyStore.setSession(bugly_session)
+      window.electron.ipcRenderer.send(WebToMainMsg.InitBugly)
     })
     return () => {
       window.electron.ipcRenderer.removeAllListeners('bugly-session')
+    }
+  }, [])
+  useEffect(() => {
+    window.electron.ipcRenderer.on(MainToWebMsg.OnGetBuglyUserInfo, (_, res) => {
+      buglyStore.setUserinfo(res)
+    })
+    return () => {
+      window.electron.ipcRenderer.removeAllListeners(MainToWebMsg.OnGetBuglyUserInfo)
+    }
+  }, [])
+  useEffect(() => {
+    window.electron.ipcRenderer.on(MainToWebMsg.OnGetBuglyAppList, (_, res) => {
+      console.log('get applist', res)
+      buglyStore.setAppList(res)
+    })
+    return () => {
+      window.electron.ipcRenderer.removeAllListeners(MainToWebMsg.OnGetBuglyAppList)
     }
   }, [])
   useEffect(() => {
